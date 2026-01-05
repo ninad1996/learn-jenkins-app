@@ -78,11 +78,11 @@ pipeline {
             steps {
                 sh '''
                     echo "small"
-                    npm install netlify-cli node-jq
+                    npm install netlify-cli@20.1.1 node-jq
                     node_modules/.bin/netlify --version
                     node_modules/.bin/netlify status
                     echo "Deploying to Staging!"
-                    node_modules/.bin/netlify deploy --dir=build
+                    node_modules/.bin/netlify deploy --dir=build --json
                 '''
             }
         }    
