@@ -3,6 +3,7 @@ pipeline {
     environment{
         NETLIFY_SITE_ID = 'f8c0d589-6470-4e56-bc0d-25b9ff44d30f'
         NETLIFY_AUTH_TOKEN = credentials('netlify-token')
+        REACT_APP_VERSION = '1.2.3'
     }
     stages {
         stage('Build') {
@@ -95,13 +96,6 @@ pipeline {
                 }
             }
         }        
-        stage ('Approval') {
-            steps {
-                timeout(time: 1, unit: 'HOURS'){
-                    input message: 'Ready to deploy?', ok: 'Yes, I am sure I want to deploy!'
-                }
-            }
-        }    
         stage('Deploy Prod') {
             environment{
                 CI_ENVIRONMENT_URL='https://curious-froyo-ff7012.netlify.app'
