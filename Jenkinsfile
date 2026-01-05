@@ -85,7 +85,10 @@ pipeline {
                     node_modules/.bin/netlify deploy --dir=build
                 '''
             }
-        }        
+        }    
+        stage ('Approval') {
+            input message: 'Ready to deploy?', ok: 'Yes, I am sure I want to deploy!'
+        }    
         stage('Deploy Prod') {
             agent {
                 docker {
