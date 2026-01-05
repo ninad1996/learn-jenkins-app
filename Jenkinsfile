@@ -81,6 +81,7 @@ pipeline {
                     node_modules/.bin/netlify --version
                     node_modules/.bin/netlify status
                     echo "Deploying to netlify!"
+                    node_modules/.bin/netlify deploy --dir=build --prod
                 '''
             }
         }           
