@@ -118,24 +118,6 @@ pipeline {
             }
         }    
         stage('Deploy Prod') {
-            agent {
-                docker {
-                    image 'node:18-alpine'
-                    reuseNode true
-                }
-            }
-            steps {
-                sh '''
-                    echo "small"
-                    npm install netlify-cli@20.1.1
-                    node_modules/.bin/netlify --version
-                    node_modules/.bin/netlify status
-                    echo "Deploying to netlify!"
-                    node_modules/.bin/netlify deploy --dir=build --prod
-                '''
-            }
-        }
-        stage('Prod E2E') {
             environment{
                 CI_ENVIRONMENT_URL='https://curious-froyo-ff7012.netlify.app'
             }
@@ -147,6 +129,12 @@ pipeline {
             }
             steps{
                 sh '''
+                    npm install netlify-cli@20.1.1
+                    node_modules/.bin/netlify --version
+                    node_modules/.bin/netlify status
+                    echo "Deploying to netlify!"
+                    node_modules/.bin/netlify deploy --dir=build --prod                
+                    echo "Starting E2E test!"
                     npx playwright test --reporter=html
                 '''
             }
