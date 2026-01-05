@@ -78,11 +78,12 @@ pipeline {
             steps {
                 sh '''
                     echo "small"
-                    npm install netlify-cli@20.1.1
+                    npm install netlify-cli node-jq
                     node_modules/.bin/netlify --version
                     node_modules/.bin/netlify status
                     echo "Deploying to netlify!"
-                    node_modules/.bin/netlify deploy --dir=build
+                    node_modules/.bin/netlify deploy --dir=build --json > deploy-output.json
+                    node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json
                 '''
             }
         }    
