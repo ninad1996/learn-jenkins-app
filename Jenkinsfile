@@ -7,6 +7,9 @@ pipeline {
     }
     stages {
         stage('AWS') {
+            environment {
+                AWS_S3_BUCKET='learn-jenkins-06012026'
+            }
             agent {
                 docker {
                     image 'amazon/aws-cli'
@@ -18,7 +21,7 @@ pipeline {
                     sh '''
                         aws --version
                         echo "Hello S3!" > index.html
-                        aws s3 cp index.html s3://learn-jenkins-06012026/index.html
+                        aws s3 cp index.html s3://$AWS_S3_BUCKET/index.html
                     '''
                 }
             }
