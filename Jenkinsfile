@@ -6,6 +6,18 @@ pipeline {
         REACT_APP_VERSION = "1.0.$BUILD_ID"
     }
     stages {
+        stage('AWS') {
+            agent {
+                docker {
+                    image 'amazon/aws-cli'
+                }
+            }
+            steps {
+                sh '''
+                    aws --version
+                '''
+            }
+        }
         stage('Build') {
             agent {
                 docker {
@@ -57,13 +69,12 @@ pipeline {
                         sh '''
                             serve -s build &
                             sleep 10
-                            npx playwright --version
                             npx playwright test --reporter=html
                         '''
                     }
                     post {
                         always {
-                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright: Local Report', reportTitles: ''])
+                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright: Local Report', reportTitles: '', useWrapperFileDirectly: true])
                         }
                     }                    
                 }
@@ -86,13 +97,12 @@ pipeline {
                     echo "Deploying to Staging!"
                     netlify deploy --dir=build --json > deploy-output.json                
                     CI_ENVIRONMENT_URL=$(jq -r '.deploy_url' deploy-output.json)
-                    npx playwright --version
                     npx playwright test --reporter=html
                 '''
             }
             post {
                 always {
-                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright: Staging E2E Report', reportTitles: ''])
+                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright: Staging E2E Report', reportTitles: '', useWrapperFileDirectly: true])
                 }
             }
         }        
@@ -113,13 +123,12 @@ pipeline {
                     echo "Deploying to netlify!"
                     netlify deploy --dir=build --prod                
                     echo "Starting E2E test!"
-                    npx playwright --version
                     npx playwright test --reporter=html
                 '''
             }
             post {
                 always {
-                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright: Prod Report', reportTitles: ''])
+                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright: Prod Report', reportTitles: '', useWrapperFileDirectly: true])
                 }
             }
         }
