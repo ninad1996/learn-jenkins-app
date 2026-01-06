@@ -57,6 +57,7 @@ pipeline {
                         sh '''
                             serve -s build &
                             sleep 10
+                            npx playwright --version
                             npx playwright test --reporter=html
                         '''
                     }
@@ -85,6 +86,7 @@ pipeline {
                     echo "Deploying to Staging!"
                     netlify deploy --dir=build --json > deploy-output.json                
                     CI_ENVIRONMENT_URL=$(jq -r '.deploy_url' deploy-output.json)
+                    npx playwright --version
                     npx playwright test --reporter=html
                 '''
             }
@@ -111,6 +113,7 @@ pipeline {
                     echo "Deploying to netlify!"
                     netlify deploy --dir=build --prod                
                     echo "Starting E2E test!"
+                    npx playwright --version
                     npx playwright test --reporter=html
                 '''
             }
