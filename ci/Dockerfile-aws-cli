@@ -1,15 +1,24 @@
-FROM amazon/aws-cli AS aws
+# FROM amazon/aws-cli AS aws
+# FROM docker:26
+
+# # Install jq
+# RUN apt-get update && \
+#     apt-get install -y jq && \
+#     rm -rf /var/lib/apt/lists/*
+
+# # Copy AWS CLI runtime
+# COPY --from=aws /usr/local/aws-cli /usr/local/aws-cli
+
+# # Put AWS CLI on PATH
+# ENV PATH="/usr/local/aws-cli/v2/current/bin:/usr/local/bin:${PATH}"
+
+# RUN aws --version && jq --version && docker --version
+# 1. Install dependencies (aws-cli, jq)
+# Alpine provides aws-cli in its community repository
 FROM docker:26
+RUN apk add --no-cache \
+    aws-cli \
+    jq
 
-# Install jq
-RUN apt-get update && \
-    apt-get install -y jq && \
-    rm -rf /var/lib/apt/lists/*
-
-# Copy AWS CLI runtime
-COPY --from=aws /usr/local/aws-cli /usr/local/aws-cli
-
-# Put AWS CLI on PATH
-ENV PATH="/usr/local/aws-cli/v2/current/bin:/usr/local/bin:${PATH}"
-
+# 2. Verify installations
 RUN aws --version && jq --version && docker --version
