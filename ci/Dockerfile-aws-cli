@@ -1,4 +1,4 @@
 FROM amazonlinux:2
-RUN yum install awscli
+RUN sudo yum install -y awscli
 # Verify installation (optional, you can remove this in your final Dockerfile)
 RUN aws --version
