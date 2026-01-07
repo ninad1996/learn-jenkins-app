@@ -1,15 +1,3 @@
-FROM amazonlinux:2
-# Disable mirrorlist, force baseurl
-RUN sed -i 's|^mirrorlist=|#mirrorlist=|g' /etc/yum.repos.d/amzn2-core.repo && \
-    sed -i 's|^#baseurl=|baseurl=|g' /etc/yum.repos.d/amzn2-core.repo
+FROM amazon/aws-cli:2
 
-# Optional: show repo config (debug)
-RUN cat /etc/yum.repos.d/amzn2-core.repo
-
-# Now yum WILL work
-RUN yum clean all && \
-    yum makecache && \
-    yum install -y awscli unzip curl ca-certificates && \
-    yum clean all
-# Verify installation (optional, you can remove this in your final Dockerfile)
-RUN aws --version
+RUN yum install -y docker-cli && yum clean all
