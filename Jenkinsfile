@@ -31,13 +31,20 @@ pipeline {
         stage('Build Docker Image') {
             agent {
                 docker {
-                    image 'amazon/aws-cli'
+                    image 'amazonlinux:2'
+                    // image 'amazon/aws-cli'
                     reuseNode true
                     args "-u root -v /var/run/docket.sock:/var/run/docket.sock --entrypoint=''"
                 }
             }
             steps {
                 sh '''
+                yum install -y unzip curl \
+                    && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o awscliv2.zip \
+                    && unzip awscliv2.zip \
+                    && ./aws/install \
+                    && rm -rf aws awscliv2.zip \
+                    && yum clean all
                     amazon-linux-extras install docker
                     docker build -t myjenkinsapp .
                 '''
