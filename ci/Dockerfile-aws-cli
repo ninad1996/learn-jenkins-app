@@ -1,11 +1,15 @@
 FROM amazon/aws-cli AS aws
-FROM docker:26-cli
-RUN apk add --no-cache jq
+FROM docker:26
+
+# Install jq
+RUN apt-get update && \
+    apt-get install -y jq && \
+    rm -rf /var/lib/apt/lists/*
 
 # Copy AWS CLI runtime
 COPY --from=aws /usr/local/aws-cli /usr/local/aws-cli
 
-# Ensure aws is on PATH (Jenkins-safe)
+# Put AWS CLI on PATH
 ENV PATH="/usr/local/aws-cli/v2/current/bin:/usr/local/bin:${PATH}"
 
 RUN aws --version && jq --version && docker --version
