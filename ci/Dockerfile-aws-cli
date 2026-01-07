@@ -1,13 +1,15 @@
 FROM amazonlinux:2
-# Install necessary dependencies (unzip and curl)
-RUN yum update -y && yum install -y unzip curl
+
+# DO NOT yum update (causes your error)
+RUN yum install -y unzip curl \
+ && yum clean all
 
 # Install AWS CLI v2
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
-    unzip awscliv2.zip && \
-    ./aws/install && \
-    rm awscliv2.zip
+RUN curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip \
+ && unzip awscliv2.zip \
+ && ./aws/install \
+ && rm -rf aws awscliv2.zip
 
+CMD ["aws", "--version"]
 # Verify installation (optional, you can remove this in your final Dockerfile)
 RUN aws --version
-RUN amazon-linux-extras install docker
