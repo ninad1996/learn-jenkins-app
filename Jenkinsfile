@@ -9,6 +9,7 @@ pipeline {
         AWS_ECS_CLUSTER = "LearnJenkinsApp-Cluster-Prod"
         AWS_ECS_SERVICE_PROD = "LearnJenkinsApp-Service-Prod"
         AWS_ECS_TD_PROD = "LearnJenkinsApp-TaskDefinition-Prod"
+        AWS_DOCKER_REGISTRY = "277264794632.dkr.ecr.ap-south-1.amazonaws.com"
     }
     stages {
         stage('Build') {
@@ -39,7 +40,9 @@ pipeline {
             }
             steps {
                 sh '''
-                    docker build -t $APP_NAME:$REACT_APP_VERSION .
+                    docker build -t $AWS_DOCKER_REGISTRY/$APP_NAME:$REACT_APP_VERSION .
+                    aws ecr get-login-password | docker login --username AWS --password-stdin $AWS_DOCKER_REGISTRY
+                    docker push -t $AWS_DOCKER_REGISTRY/$APP_NAME:$REACT_APP_VERSION
                 '''
             }
         }
