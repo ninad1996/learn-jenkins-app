@@ -6,6 +6,6 @@ RUN apk add --no-cache jq
 COPY --from=aws /usr/local/aws-cli /usr/local/aws-cli
 
 # Ensure aws is on PATH (Jenkins-safe)
-ENV PATH="/usr/local/aws-cli/v2/current/bin:/usr/local/bin:${PATH}
+ENV PATH="/usr/local/aws-cli/v2/current/bin:/usr/local/bin:${PATH}"
 
 RUN aws --version && jq --version && docker --version
